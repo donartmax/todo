@@ -1,26 +1,48 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import TodoForm from './components/TodoForm';
+import TodoList from './components/TodoList';
+import TodoHeader from './components/TodoHeader';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component {
+  constructor (props) {
+    super(props);
+    this.addItem = this.addItem.bind(this);
+    this.removeItem = this.removeItem.bind(this);
+    this.markTodoDone = this.markTodoDone.bind(this);
+    this.state = {todoItems: []};
+  }
+  addItem(todoItem) {
+    let todoItems = [...this.state.todoItems];
+    todoItems.unshift({
+      value: todoItem.newItemValue, 
+      done: false
+    });
+    this.setState({todoItems: todoItems});
+  }
+  removeItem (itemIndex) {
+    let todoItems = [...this.state.todoItems];
+    todoItems.splice(itemIndex, 1);
+    this.setState({todoItems: todoItems});
+  }
+  markTodoDone(itemIndex) {
+    let todoItems = [...this.state.todoItems];
+    var todo = todoItems[itemIndex];
+    todoItems.splice(itemIndex, 1);
+    todo.done = !todo.done;
+    todo.done ? todoItems.push(todo) : todoItems.unshift(todo);
+    this.setState({todoItems: todoItems});  
+  }
+  render() {
+    console.log(this.state.todoItems);
+    return (
+      <div id="main">
+        <TodoHeader />
+        <TodoList items={this.state.todoItems} removeItem={this.removeItem} markTodoDone={this.markTodoDone}/>
+        <TodoForm addItem={this.addItem} />
+      </div>
+    );
+  }
 }
 
 export default App;
